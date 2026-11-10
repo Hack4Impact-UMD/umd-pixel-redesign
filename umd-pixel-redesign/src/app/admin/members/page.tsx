@@ -445,6 +445,12 @@ export default function MembersPage() {
     setMemberEventsPage(0);
   }, [memberEventsSearch, selectedMember?.id]);
 
+  const [statusError, setStatusError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setStatusError(null);
+  }, [selectedMember?.id]);
+
   useEffect(() => {
     setMemberActivitiesPage(0);
   }, [selectedMember?.id, memberActivities.length]);
@@ -480,6 +486,7 @@ export default function MembersPage() {
     else next = "present";
     setSaving(true);
     setMessage(null);
+    setStatusError(null);
     try {
       await setAttendanceStatus(evtId, selectedMember.id, next);
       setMemberEventsView((prev) =>
@@ -498,6 +505,11 @@ export default function MembersPage() {
       );
       await adminQuery.refetch();
       setMessage("Status updated.");
+    } catch (err) {
+      console.error("Failed to update attendance status", err);
+      setStatusError(
+        `Failed to update status: ${err instanceof Error ? err.message : "Unknown error"}`
+      );
     } finally {
       setSaving(false);
     }
@@ -999,6 +1011,22 @@ export default function MembersPage() {
                             )}
                           </TableBody>
                         </Table>
+                      {statusError && (
+                        <div
+                          role="alert"
+                          className="mt-3 flex items-start justify-between gap-3 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                        >
+                          <span>{statusError}</span>
+                          <button
+                            type="button"
+                            onClick={() => setStatusError(null)}
+                            className="shrink-0 text-xs font-medium underline-offset-2 hover:underline"
+                            aria-label="Dismiss status error"
+                          >
+                            Dismiss
+                          </button>
+                        </div>
+                      )}
                       {(memberEventsSearch.trim() || filteredMemberEvents.length > 5) && (
                         <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
                           {filteredMemberEvents.length > 5 && (
