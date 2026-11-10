@@ -498,6 +498,11 @@ export default function MembersPage() {
       );
       await adminQuery.refetch();
       setMessage("Status updated.");
+    } catch (err) {
+      console.error("Failed to update attendance status", err);
+      setMessage(
+        `Failed to update status: ${err instanceof Error ? err.message : "Unknown error"}`
+      );
     } finally {
       setSaving(false);
     }
