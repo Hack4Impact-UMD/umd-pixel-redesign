@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "predeploy": "npm run typecheck && npm run lint && npm --prefix functions ci",
+    "predeploy": "node scripts/check-env.mjs && npm run typecheck && npm run lint && npm --prefix functions ci",
     "deploy": "FIREBASE_CLI_EXPERIMENTS=webframeworks firebase deploy --project umd-pixels",
     "deploy:dry": "npm run predeploy && FIREBASE_CLI_EXPERIMENTS=webframeworks firebase deploy --project umd-pixels --dry-run"
   },
